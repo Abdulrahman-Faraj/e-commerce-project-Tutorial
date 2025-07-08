@@ -1,3 +1,6 @@
+using e_commerce_project_Tutorial.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace e_commerce_project_Tutorial
 {
     public class Program
@@ -8,8 +11,11 @@ namespace e_commerce_project_Tutorial
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<EcommerceDbContext>(option =>
+            option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
+            
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
