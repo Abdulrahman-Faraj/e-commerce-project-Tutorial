@@ -10,7 +10,7 @@
 
         public decimal Discount { get; set; }
         public string? MainImageFileName { get; set; }
-        public List<ProductRelatedImageDisplayViewModel> RelatedImageDisplayViewModels { get; set; } = new();
+        public List<ProductRelatedImageDisplayViewModel> RelatedImage { get; set; } = new();
 
     }
     public class ProductRelatedImageDisplayViewModel
