@@ -270,7 +270,7 @@ namespace e_commerce_project_Tutorial.Controllers
             {
                 return NotFound();  
             }
-            var vm = new DeleteproductViewModel
+            var vm = new DeleteProductViewModel
             {
                 ProductId = product.ProductId,
                 Name =  product.Name,
@@ -310,7 +310,7 @@ namespace e_commerce_project_Tutorial.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> DeleteImages(int imageId)
+        public async Task<IActionResult> DeleteImage(int imageId)
         {
             var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null) { return NotFound(); }

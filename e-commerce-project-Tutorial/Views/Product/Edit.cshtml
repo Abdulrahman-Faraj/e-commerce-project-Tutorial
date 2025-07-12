@@ -1,0 +1,149 @@
+﻿@model UpdateProductViewModel
+@{
+	ViewData["Title"] = "Edit Product";
+}
+<div class="container my-5">
+	<!-- Edit Form Card -->
+	<div class="row justify-content-center mb-4">
+		<div class="col-lg-8">
+			<div class="card shadow-sm">
+				<div class="card-header bg-primary text-white">
+					<h4 class="mb-0">Product Information</h4>
+				</div>
+				<div class="card-body">
+					<form asp-action="Edit" method="post" enctype="multipart/form-data">
+						<input type="hidden" asp-for="ProductId" />
+						<!-- Basic Info: Name & Brand -->
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label asp-for="Name" class="form-label"></label>
+								<input asp-for="Name" class="form-control" placeholder="Enter product name" />
+								<span asp-validation-for="Name" class="text-danger"></span>
+							</div>
+							<div class="col-md-6">
+								<label asp-for="Brand" class="form-label"></label>
+								<input asp-for="Brand" class="form-control" placeholder="Enter brand name" />
+								<span asp-validation-for="Brand" class="text-danger"></span>
+							</div>
+						</div>
+						<!-- Pricing: Price & Discount -->
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label asp-for="Price" class="form-label"></label>
+								<input asp-for="Price" class="form-control" placeholder="Enter price" />
+								<span asp-validation-for="Price" class="text-danger"></span>
+							</div>
+							<div class="col-md-6">
+								<label asp-for="Discount" class="form-label">Discount (%)</label>
+								<input asp-for="Discount" class="form-control" placeholder="Enter discount percentage" />
+								<span asp-validation-for="Discount" class="text-danger"></span>
+							</div>
+						</div>
+						<!-- Description / Features -->
+						<div class="mb-3">
+							<label asp-for="Description" class="form-label">Short Description / Features</label>
+<textarea asp-for="Description" class="form-control" rows="3" placeholder="Separate bullet points with semicolons"></textarea>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+						<hr />
+						<!-- Main Image Section -->
+						<div class="mb-3">
+							<label class="form-label">Existing Main Image</label><br />
+							@if (!string.IsNullOrEmpty(Model.ExistingMainImageFileName))
+							{
+								var mainImgUrl = Url.Content("~/product-image/" + Model.ExistingMainImageFileName);
+								<img src="@mainImgUrl" alt="Main Image" class="img-thumbnail mb-2" style="max-width:150px; object-fit:cover;" />
+							}
+							else
+							{
+								<p class="text-muted">No main image available.</p>
+							}
+						</div>
+						<div class="mb-3">
+							<label asp-for="MainImageFile" class="form-label">Replace Main Image (Optional)</label>
+							<input asp-for="MainImageFile" type="file" class="form-control" />
+							<span asp-validation-for="MainImageFile" class="text-danger"></span>
+						</div>
+						<!-- Related Images Section -->
+						<div class="mb-3">
+							<label asp-for="RelatedImageFiles" class="form-label">Add More Related Images (Optional)</label>
+							<input asp-for="RelatedImageFiles" type="file" multiple class="form-control" />
+							<span asp-validation-for="RelatedImageFiles" class="text-danger"></span>
+						</div>
+						<div class="d-flex justify-content-end">
+							<button type="submit" class="btn btn-success me-2">Update Product</button>
+							<a asp-action="Index" class="btn btn-info">Back to List</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Existing Related Images Card -->
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="card shadow-sm">
+				<div class="card-header bg-info text-white">
+					<h5 class="mb-0">Existing Related Images</h5>
+				</div>
+				<div class="card-body">
+					@if (Model.ExistingRelatedImage != null && Model.ExistingRelatedImage.Any())
+					{
+						<div class="row">
+							@foreach (var img in Model.ExistingRelatedImage)
+							{
+								var imgUrl = Url.Content("~/product-image/" + img.ImageFileName);
+								<div class="col-4 col-md-3 mb-3 text-center">
+									<img src="@imgUrl" alt="Related Image" class="img-thumbnail" style="max-width:100px; object-fit:cover;" />
+									<div class="mt-2">
+										<!-- Instead of a simple alert, we now call a function to open a modal -->
+										<a href="javascript:void(0);" class="btn btn-sm btn-danger"
+										   onclick="confirmDelete('@img.ImageId')">
+											Delete
+										</a>
+									</div>
+								</div>
+							}
+						</div>
+					}
+					else
+					{
+						<p class="text-muted">No related images found.</p>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Are you sure you want to delete this image?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<!-- The delete button will have its href set dynamically -->
+				<a id="deleteConfirmButton" class="btn btn-danger" href="#">Delete</a>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script>
+		// Function to open the delete confirmation modal
+		function confirmDelete(imageId) {
+		// Construct the URL for deletion. Adjust the URL if necessary.
+		var url = '@Url.Action("DeleteImage", "Product")' + '?imageId=' + imageId;
+		document.getElementById("deleteConfirmButton").setAttribute("href", url);
+		// Open the modal using Bootstrap's modal method
+		var deleteModal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
+		deleteModal.show();
+		}
+	</script>
+}

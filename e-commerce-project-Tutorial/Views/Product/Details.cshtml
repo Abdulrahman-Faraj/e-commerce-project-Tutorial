@@ -1,0 +1,139 @@
+﻿@model ProductDisplayViewModel
+@{
+	ViewData["Title"] = "Product Details";
+}
+<div class="container my-5">
+	<!-- Optional: A header section can be used here if desired -->
+	<div class="row g-4">
+		<!-- Left Column: Thumbnails -->
+		<div class="col-md-2">
+			<div class="card shadow-sm">
+				<div class="card-body p-2">
+					<div class="d-flex flex-column align-items-center">
+						<!-- Display main image as a thumbnail (if available) -->
+						@if (!string.IsNullOrEmpty(Model.MainImageFileName))
+						{
+							var mainThumbUrl = Url.Content("~/product-image/" + Model.MainImageFileName);
+							<img src="@mainThumbUrl"
+								 alt="Main Thumbnail"
+								 class="img-thumbnail mb-3"
+								 style="width:70px; cursor:pointer;"
+								 onmouseover="setMainImage('@mainThumbUrl')"
+								 onclick="setMainImage('@mainThumbUrl')" />
+						}
+						<!-- Display related images as thumbnails -->
+						@if (Model.RelatedImage != null && Model.RelatedImage.Any())
+						{
+							foreach (var rel in Model.RelatedImage)
+							{
+								var thumbUrl = Url.Content("~/product-image/" + rel.ImageFileName);
+								<img src="@thumbUrl"
+									 alt="Related Thumbnail"
+									 class="img-thumbnail mb-3"
+									 style="width:70px; cursor:pointer;"
+									 onmouseover="setMainImage('@thumbUrl')"
+									 onclick="setMainImage('@thumbUrl')" />
+							}
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Center Column: Main Image Display -->
+		<div class="col-md-5">
+			<div class="card shadow-lg">
+				<div class="card-body p-3 text-center">
+					@if (!string.IsNullOrEmpty(Model.MainImageFileName))
+					{
+						var bigImgUrl = Url.Content("~/product-image/" + Model.MainImageFileName);
+						<img id="bigImage"
+							 src="@bigImgUrl"
+							 alt="@Model.Name"
+							 class="img-fluid rounded"
+							 style="max-width: 400px; max-height: 400px; object-fit: contain;" />
+					}
+					else
+					{
+						<p class="text-muted">No main image available.</p>
+					}
+				</div>
+			</div>
+		</div>
+		<!-- Right Column: Product Details & Actions -->
+		<div class="col-md-5">
+			<div class="card shadow-sm border-0">
+				<div class="card-body p-4">
+					<!-- Product Title & Brand (displayed here instead of top) -->
+					<h2 class="fw-bold">@Model.Name</h2>
+					@if (!string.IsNullOrEmpty(Model.Brand))
+					{
+						<p class="text-muted">by @Model.Brand</p>
+					}
+					<!-- Pricing Section -->
+					@{
+						decimal discountedPrice = Model.Price;
+						if (Model.Discount > 0 && Model.Discount <= 100)
+						{
+							discountedPrice = Model.Price * (1 - Model.Discount / 100);
+						}
+					}
+					<div class="mb-4">
+						<h2 class="text-danger fw-bold mb-1">$@discountedPrice.ToString("F2")</h2>
+						@if (Model.Discount > 0)
+						{
+							<p class="mb-0">
+								<small class="text-muted text-decoration-line-through me-2">$@Model.Price.ToString("F2")</small>
+								<span class="badge bg-success">Save @Model.Discount.ToString("F0")%</span>
+							</p>
+						}
+					</div>
+					<!-- Key Features -->
+					@if (!string.IsNullOrEmpty(Model.Description))
+					{
+						<div class="mb-4">
+							<h5 class="fw-semibold">Product Description</h5>
+							<ul class="list-unstyled">
+								@foreach (var bullet in Model.Description.Split(';'))
+								{
+									if (!string.IsNullOrWhiteSpace(bullet))
+									{
+										<li class="mb-1">
+											<i class="bi bi-check2-circle text-success me-1"></i>
+											@bullet.Trim()
+										</li>
+									}
+								}
+							</ul>
+						</div>
+					}
+					<!-- Action Buttons -->
+					<div class="d-grid gap-2 mt-4">
+						<button class="btn btn-warning btn-lg fw-bold">
+							<i class="bi bi-cart-fill me-2"></i> Add to Cart
+						</button>
+						<button class="btn btn-danger btn-lg fw-bold">
+							<i class="bi bi-lightning-fill me-2"></i> Buy Now
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Back to List Button -->
+	<div class="row mt-5">
+		<div class="col text-center">
+			<a asp-action="Index"  class="btn btn-success btn-lg">Back to List</a>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script>
+		// Function to update the main image source on mouse over or click
+		function setMainImage(newSrc) {
+		var bigImg = document.getElementById('bigImage');
+		if (bigImg) {
+		bigImg.src = newSrc;
+		}
+		}
+	</script>
+}

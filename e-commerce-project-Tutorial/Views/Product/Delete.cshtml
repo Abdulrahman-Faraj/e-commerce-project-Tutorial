@@ -1,0 +1,52 @@
+﻿@model DeleteProductViewModel
+@{
+	ViewData["Title"] = "Delete Product";
+}
+<div class="container my-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="card shadow-sm">
+				<div class="card-header bg-danger text-white">
+					<h3 class="mb-0">Delete Product</h3>
+				</div>
+				<div class="card-body">
+					<p class="lead">Are you sure you want to delete the following product?</p>
+					<hr />
+					<div class="row">
+						<div class="col-md-4 text-center">
+							@if (!string.IsNullOrEmpty(Model.MainImageFileName))
+							{
+								var mainImgUrl = Url.Content("~/product-image/" + Model.MainImageFileName);
+								<img src="@mainImgUrl" alt="@Model.Name" class="img-fluid rounded mb-2" style="max-width: 150px;" />
+							}
+							else
+							{
+								<p class="text-muted">No image available</p>
+							}
+						</div>
+						<div class="col-md-8">
+							<h4>@Model.Name</h4>
+							@if (!string.IsNullOrEmpty(Model.Brand))
+							{
+								<p><strong>Brand:</strong> @Model.Brand</p>
+							}
+							<p><strong>Price:</strong> $@Model.Price.ToString("F2")</p>
+							@if (!string.IsNullOrEmpty(Model.Description))
+							{
+								<p><strong>Description:</strong> @Model.Description</p>
+							}
+						</div>
+					</div>
+					<hr />
+					<form asp-action="Delete" method="post">
+						<input type="hidden" asp-for="ProductId" />
+						<div class="d-flex justify-content-end">
+							<a asp-action="Index" class="btn btn-success me-2">Cancel</a>
+							<button type="submit" class="btn btn-danger">Delete</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

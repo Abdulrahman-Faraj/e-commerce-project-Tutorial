@@ -23,7 +23,7 @@ namespace e_commerce_project_Tutorial.Models
         public decimal Price { get; set; }
 
         [Range(0,100)]
-        [Column(TypeName ="decimal(3,2)")]
+        [Column(TypeName ="decimal(18,2)")]
         public decimal Discount { get; set; }
 
         public string? MainImageFileName { get; set; }

@@ -11,8 +11,8 @@ using e_commerce_project_Tutorial.Data;
 namespace e_commerce_project_Tutorial.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    [Migration("20250707212332_init1")]
-    partial class init1
+    [Migration("20250711162343_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace e_commerce_project_Tutorial.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<byte[]>("MainImageData")
                         .HasColumnType("varbinary(max)");

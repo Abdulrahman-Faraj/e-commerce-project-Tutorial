@@ -1,0 +1,215 @@
+﻿@model ProductListViewModel
+@{
+	ViewData["Title"] = "Products List";
+}
+<div class="container-sm w-100 mx-auto mt-4">
+	<!-- Page Header -->
+	<div class="row align-items-center mb-3">
+		<div class="col">
+		</div>
+		<div class="col-auto">
+			<a asp-action="Create" class="btn btn-primary">+ Create New Product</a>
+		</div>
+	</div>
+	<!-- Filter Section -->
+	<div class="card mb-4 shadow-sm">
+		<div class="card-body">
+			<form method="get" asp-action="Index">
+				<div class="row g-3 align-items-end">
+					<div class="col-md-3">
+						<label class="form-label">
+							🔍 Product Name
+						</label>
+						<input type="text" name="searchName" class="form-control" placeholder="Search by name" value="@Model.SearchName" />
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">
+							🏷️ Brand
+						</label>
+						<input type="text" name="searchBrand" class="form-control" placeholder="Search by brand" value="@Model.SearchBrand" />
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">
+							💲 Min Price
+						</label>
+						<input type="number" name="minPrice" class="form-control" placeholder="Min" step="0.01" value="@(Model.MinPrice.HasValue ? Model.MinPrice.Value.ToString("F2") : "")" />
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">
+							💲 Max Price
+						</label>
+						<input type="number" name="maxPrice" class="form-control" placeholder="Max" step="0.01" value="@(Model.MaxPrice.HasValue ? Model.MaxPrice.Value.ToString("F2") : "")" />
+					</div>
+					<div class="col-md-2">
+						<button type="submit" class="btn btn-outline-primary w-100">
+							Filter ✨
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- Responsive Table -->
+	<div class="table-responsive">
+		<table class="table table-striped table-hover align-middle">
+			<thead class="table-light">
+				<tr>
+					<th class="text-center" style="min-width:100px;">Image</th>
+					<th style="min-width:200px;">Name</th>
+					<th style="min-width:150px;">Brand</th>
+					<th class="text-end" style="min-width:120px;">Price</th>
+					<th class="text-center" style="min-width:180px;">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var product in Model.Products)
+				{
+					// Resolve main image URL; if missing, fallback to a placeholder.
+					var mainImgUrl = !string.IsNullOrEmpty(product.MainImageFileName)
+					? Url.Content("~/product-image/" + product.MainImageFileName)
+					: Url.Content("~/product-image/NoImage.png");
+					// Calculate discounted price if applicable.
+					decimal discountedPrice = product.Price;
+					if (product.Discount > 0 && product.Discount <= 100)
+					{
+						discountedPrice = product.Price * (1 - product.Discount / 100);
+					}
+					<tr>
+						<!-- Image Column -->
+						<td class="text-center">
+							<img src="@mainImgUrl" alt="@product.Name" class="img-fluid rounded" style="max-width:90px; max-height:90px;" />
+							@* @if (!string.IsNullOrEmpty(product.MainImageFileName))
+{
+<img src="@mainImgUrl" alt="@product.Name" class="img-fluid rounded" style="max-width:90px; max-height:90px;" />
+}
+else
+{
+<span class="text-muted">No image</span>
+} *@
+						</td>
+						<!-- Name Column with text truncation -->
+						<td>
+							<span class="d-inline-block text-truncate" style="max-width:190px;" title="@product.Name">
+								@product.Name
+							</span>
+						</td>
+						<!-- Brand Column with text truncation -->
+						<td>
+							<span class="d-inline-block text-truncate" style="max-width:130px;" title="@product.Brand">
+								@product.Brand
+							</span>
+						</td>
+						<!-- Price Column -->
+						<td class="text-end">
+							@if (product.Discount > 0)
+							{
+								<div>
+									<span class="text-danger fw-bold">$@discountedPrice.ToString("F2")</span>
+								</div>
+								<div>
+									<small class="text-muted text-decoration-line-through">$@product.Price.ToString("F2")</small>
+									<span class="badge bg-success ms-1">Save @product.Discount.ToString("F0")%</span>
+								</div>
+							}
+							else
+							{
+								<span class="fw-bold">$@product.Price.ToString("F2")</span>
+							}
+						</td>
+						<!-- Actions Column -->
+						<td class="text-center">
+							<a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info btn-sm me-1">Details</a>
+							<a asp-action="Edit" asp-route-id="@product.ProductId" class="btn btn-warning btn-sm me-1">Edit</a>
+							<a asp-action="Delete" asp-route-id="@product.ProductId" class="btn btn-danger btn-sm">Delete</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<!-- Pagination Section -->
+	<nav aria-label="Page navigation">
+		<ul class="pagination justify-content-center">
+			@* First Page Button *@
+			@if (Model.CurrentPage > 1)
+			{
+				<li class="page-item">
+					<a class="page-link" asp-action="Index" asp-route-page="1"
+					   asp-route-searchName="@Model.SearchName"
+					   asp-route-searchBrand="@Model.SearchBrand"
+					   asp-route-minPrice="@Model.MinPrice"
+					   asp-route-maxPrice="@Model.MaxPrice">
+						« First
+					</a>
+				</li>
+			}
+			else
+			{
+				<li class="page-item disabled">
+					<span class="page-link">« First</span>
+				</li>
+			}
+			@* Previous Page Button *@
+			@if (Model.CurrentPage > 1)
+			{
+				<li class="page-item">
+					<a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)"
+					   asp-route-searchName="@Model.SearchName"
+					   asp-route-searchBrand="@Model.SearchBrand"
+					   asp-route-minPrice="@Model.MinPrice"
+					   asp-route-maxPrice="@Model.MaxPrice">
+						‹ Prev
+					</a>
+				</li>
+			}
+			else
+			{
+				<li class="page-item disabled">
+					<span class="page-link">‹ Prev</span>
+				</li>
+			}
+			@* Current Page Display *@
+			<li class="page-item active">
+				<span class="page-link">@Model.CurrentPage</span>
+			</li>
+			@* Next Page Button *@
+			@if (Model.CurrentPage < Model.TotalPages)
+			{
+				<li class="page-item">
+					<a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)"
+					   asp-route-searchName="@Model.SearchName"
+					   asp-route-searchBrand="@Model.SearchBrand"
+					   asp-route-minPrice="@Model.MinPrice"
+					   asp-route-maxPrice="@Model.MaxPrice">
+						Next ›
+					</a>
+				</li>
+			}
+			else
+			{
+				<li class="page-item disabled">
+					<span class="page-link">Next ›</span>
+				</li>
+			}
+			@* Last Page Button *@
+			@if (Model.CurrentPage < Model.TotalPages)
+			{
+				<li class="page-item">
+					<a class="page-link" asp-action="Index" asp-route-page="@(Model.TotalPages)"
+					   asp-route-searchName="@Model.SearchName"
+					   asp-route-searchBrand="@Model.SearchBrand"
+					   asp-route-minPrice="@Model.MinPrice"
+					   asp-route-maxPrice="@Model.MaxPrice">
+						Last »
+					</a>
+				</li>
+			}
+			else
+			{
+				<li class="page-item disabled">
+					<span class="page-link">Last »</span>
+				</li>
+			}
+		</ul>
+	</nav>
+</div>

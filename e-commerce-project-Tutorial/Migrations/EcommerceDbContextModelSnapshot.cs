@@ -40,7 +40,7 @@ namespace e_commerce_project_Tutorial.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<byte[]>("MainImageData")
                         .HasColumnType("varbinary(max)");

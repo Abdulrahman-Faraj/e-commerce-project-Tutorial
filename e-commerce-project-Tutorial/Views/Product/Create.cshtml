@@ -1,0 +1,72 @@
+﻿@model CreateProductViewModel
+@{
+	ViewData["Title"] = "Create Product";
+}
+<div class="container my-5">
+	<!-- Centered Row -->
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="card shadow-sm">
+				<!-- Card Header -->
+				<div class="card-header bg-primary text-white">
+					<h3 class="mb-0">Create New Product</h3>
+				</div>
+				<!-- Card Body: Form -->
+				<div class="card-body">
+					<form asp-action="Create" method="post" enctype="multipart/form-data">
+						<!-- Product Name & Brand -->
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label asp-for="Name" class="form-label"></label>
+								<input asp-for="Name" class="form-control" placeholder="Enter product name" />
+								<span asp-validation-for="Name" class="text-danger"></span>
+							</div>
+							<div class="col-md-6">
+								<label asp-for="Brand" class="form-label"></label>
+								<input asp-for="Brand" class="form-control" placeholder="Enter brand name" />
+								<span asp-validation-for="Brand" class="text-danger"></span>
+							</div>
+						</div>
+						<!-- Price & Discount -->
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label asp-for="Price" class="form-label"></label>
+								<input asp-for="Price" class="form-control" placeholder="Enter price" />
+								<span asp-validation-for="Price" class="text-danger"></span>
+							</div>
+							<div class="col-md-6">
+								<label asp-for="Discount" class="form-label">Discount (%)</label>
+								<input asp-for="Discount" class="form-control" placeholder="Enter discount percentage" />
+								<span asp-validation-for="Discount" class="text-danger"></span>
+							</div>
+						</div>
+						<!-- Short Description / Features -->
+						<div class="mb-3">
+							<label asp-for="Description" class="form-label">Short Description / Features</label>
+<textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter features or bullet points (separate by semicolons)"></textarea>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+						<hr />
+						<!-- Main Image Upload -->
+						<div class="mb-3">
+							<label asp-for="MainImageFile" class="form-label">Main Image</label>
+							<input asp-for="MainImageFile" type="file" class="form-control" />
+							<span asp-validation-for="MainImageFile" class="text-danger"></span>
+						</div>
+						<!-- Related Images Upload -->
+						<div class="mb-3">
+							<label asp-for="RelatedImageFiles" class="form-label">Related Images</label>
+							<input asp-for="RelatedImageFiles" type="file" multiple="multiple" class="form-control" />
+							<span asp-validation-for="RelatedImageFiles" class="text-danger"></span>
+						</div>
+						<!-- Form Buttons -->
+						<div class="d-flex justify-content-end">
+							<button type="submit" class="btn btn-success me-2">Create Product</button>
+							<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+						</div>
+					</form>
+				</div> <!-- End card-body -->
+			</div> <!-- End card -->
+		</div> <!-- End col -->
+	</div> <!-- End row -->
+</div> <!-- End container -->

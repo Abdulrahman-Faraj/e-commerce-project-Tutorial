@@ -1,6 +1,6 @@
 ﻿namespace e_commerce_project_Tutorial.ViewModels
 {
-    public class DeleteproductViewModel
+    public class DeleteProductViewModel
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
